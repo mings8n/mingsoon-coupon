@@ -159,11 +159,14 @@ main{max-width:960px;margin:0 auto;padding:24px 16px;}
   <div id="loginBox" class="login-card">
     <h2>관리자 로그인</h2>
     <p>밍쑨 핫클립 쿠폰 관리자 전용 페이지입니다.</p>
+    <div class="row" style="margin-bottom:8px;">
+      <input type="email" id="emailInput" placeholder="이메일" onkeydown="if(event.key==='Enter')checkPw()" style="flex:1;padding:9px 12px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:var(--g50);outline:none;">
+    </div>
     <div class="row">
       <input type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkPw()">
       <button class="btn-blue" onclick="checkPw()">로그인</button>
     </div>
-    <div class="err" id="pwErr">비밀번호가 틀렸습니다.</div>
+    <div class="err" id="pwErr">이메일 또는 비밀번호가 틀렸습니다.</div>
   </div>
 
   <div id="adminWrap">
@@ -307,7 +310,8 @@ main{max-width:960px;margin:0 auto;padding:24px 16px;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc }
   from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAMKN1rwiMBrR0XFxUYH09M6yxPlQHhZhI",
@@ -320,8 +324,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
 
-const PW = "!m75978070";
 const PAGE_SIZE = 30;
 const MILESTONES = new Set([3,6,9,12,15,18,21,24,27,30]);
 
@@ -349,24 +353,36 @@ window.toggleAdminGoods = () => {
 
 
 // ── auth ──
-window.checkPw = () => {
-  if (document.getElementById('pwInput').value === PW) {
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('adminWrap').style.display = 'block';
-    document.getElementById('logoutBtn').style.display = 'inline-block';
+window.checkPw = async () => {
+  const email = document.getElementById('emailInput').value.trim();
+  const pw = document.getElementById('pwInput').value;
+  try {
+    await signInWithEmailAndPassword(auth, email, pw);
     document.getElementById('pwErr').style.display = 'none';
-    startListener();
-  } else {
+  } catch(e) {
     document.getElementById('pwErr').style.display = 'block';
   }
 };
-window.logout = () => {
-  if (unsubscribe) unsubscribe();
-  document.getElementById('adminWrap').style.display = 'none';
-  document.getElementById('loginBox').style.display = 'block';
-  document.getElementById('logoutBtn').style.display = 'none';
-  document.getElementById('pwInput').value = '';
+window.logout = async () => {
+  await signOut(auth);
 };
+
+// 로그인 상태 감지
+onAuthStateChanged(auth, user => {
+  if (user) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    if (!unsubscribe) startListener();
+  } else {
+    if (unsubscribe) { unsubscribe(); unsubscribe = null; }
+    document.getElementById('adminWrap').style.display = 'none';
+    document.getElementById('loginBox').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'none';
+    document.getElementById('pwInput').value = '';
+    document.getElementById('emailInput').value = '';
+  }
+});
 function startListener() {
   unsubscribe = onSnapshot(collection(db, 'users'), snap => {
     allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
