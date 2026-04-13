@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>밍쑨 핫클립 쿠폰 — 관리자</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Pretendard',-apple-system,sans-serif;}
+:root{
+  --blue:#2563eb;--blue-lt:#dbeafe;--blue-md:#93c5fd;--blue-dk:#1d4ed8;
+  --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+  --g400:#9ca3af;--g600:#4b5563;--g800:#1f2937;
+  --amber:#f59e0b;--amber-lt:#fef3c7;--amber-md:#fde68a;
+  --green:#059669;--green-lt:#d1fae5;--green-md:#6ee7b7;
+  --red:#dc2626;--red-lt:#fee2e2;
+}
+body{background:#f8fafc;min-height:100vh;color:var(--g800);}
+header{background:white;border-bottom:1px solid var(--g200);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.logo{font-size:18px;font-weight:600;letter-spacing:-.3px;}
+.logo em{color:var(--blue);font-style:normal;}
+.logo small{font-size:11px;font-weight:500;background:var(--blue-lt);color:var(--blue-dk);padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle;}
+.hdr-r{display:flex;align-items:center;gap:8px;}
+.btn-sm{font-size:13px;padding:6px 14px;border:1px solid var(--g200);border-radius:8px;background:transparent;color:var(--g600);cursor:pointer;font-family:inherit;transition:background .15s;text-decoration:none;display:inline-block;}
+.btn-sm:hover{background:var(--g100);}
+main{max-width:960px;margin:0 auto;padding:24px 16px;}
+
+/* ── login ── */
+.login-card{background:white;border:1px solid var(--g200);border-radius:14px;padding:24px;max-width:400px;margin:60px auto;}
+.login-card h2{font-size:17px;font-weight:600;margin-bottom:4px;}
+.login-card p{font-size:13px;color:var(--g400);margin-bottom:18px;}
+.row{display:flex;gap:8px;}
+.row input{flex:1;padding:9px 12px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:var(--g50);outline:none;}
+.row input:focus{border-color:var(--blue);background:white;}
+.row .btn-blue{padding:9px 18px;background:var(--blue);color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;}
+.err{font-size:12px;color:var(--red);margin-top:6px;display:none;}
+
+#adminWrap{display:none;}
+
+/* ── 굿즈 안내 배너 ── */
+.goods-banner{background:white;border:1px solid var(--g200);border-radius:14px;margin-bottom:24px;overflow:hidden;}
+.goods-banner-header{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--g100);}
+.goods-banner-header h2{font-size:15px;font-weight:600;color:var(--g800);}
+.goods-badge{font-size:11px;background:var(--blue-lt);color:var(--blue-dk);padding:2px 8px;border-radius:20px;font-weight:600;border:1px solid var(--blue-md);}
+.goods-intro{background:var(--g50);padding:14px 20px;font-size:13px;color:var(--g600);line-height:1.8;border-bottom:1px solid var(--g100);}
+.goods-intro strong{color:var(--blue);font-weight:600;}
+.goods-intro a{color:var(--blue);text-decoration:none;font-weight:600;}
+.goods-intro a:hover{text-decoration:underline;}
+.goods-notice{font-size:12px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px dashed var(--g200);}
+.goods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--g100);}
+.goods-item{background:white;padding:16px 18px;}
+.goods-thumb{width:100%;aspect-ratio:1;object-fit:contain;border-radius:8px;background:var(--g50);margin-bottom:10px;}
+.goods-num{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-lt);border-radius:20px;padding:2px 7px;display:inline-block;margin-bottom:6px;}
+.goods-num.special{color:#92400e;background:var(--amber-lt);border:1px solid var(--amber-md);}
+.goods-name{font-size:14px;font-weight:600;color:var(--g800);margin-bottom:4px;line-height:1.4;}
+.goods-desc{font-size:12px;color:var(--g400);line-height:1.6;}
+.goods-footer{padding:12px 20px;background:var(--g50);border-top:1px solid var(--g100);font-size:12px;color:var(--g600);text-align:center;line-height:1.6;}
+
+/* ── add form ── */
+.sec-label{font-size:11px;font-weight:600;color:var(--g400);letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px;}
+.add-form{display:flex;gap:8px;margin-bottom:16px;}
+.add-form input{flex:1;padding:9px 14px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:white;outline:none;}
+.add-form input:focus{border-color:var(--blue);}
+.add-form button{padding:9px 20px;background:var(--blue);color:white;border:none;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;}
+.admin-controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.search-wrap{flex:1;min-width:160px;position:relative;}
+.search-wrap input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:white;outline:none;}
+.search-wrap input:focus{border-color:var(--blue);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--g400);pointer-events:none;}
+.sort-group{display:flex;gap:4px;}
+.sort-btn{font-size:13px;padding:6px 12px;border:1px solid var(--g200);border-radius:8px;background:white;color:var(--g600);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sort-btn.active{background:var(--blue);color:white;border-color:var(--blue);}
+
+/* ── user card ── */
+.user-card{background:white;border:1px solid var(--g200);border-radius:14px;padding:20px;margin-bottom:14px;}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px;}
+.uinfo{display:flex;align-items:center;gap:12px;}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--blue-dk);flex-shrink:0;}
+.uname{font-size:16px;font-weight:600;}
+.usub{font-size:13px;color:var(--g400);margin-top:1px;}
+.card-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.ibtn{font-size:12px;padding:4px 10px;border:1px solid var(--g200);border-radius:8px;background:transparent;color:var(--g600);cursor:pointer;font-family:inherit;transition:all .15s;}
+.ibtn:hover{background:var(--g100);}
+.ibtn.danger:hover{color:var(--red);border-color:#fca5a5;}
+
+/* ── stamp ── */
+.stamp-page{margin-bottom:10px;overflow:hidden;}
+.page-label{font-size:11px;color:var(--g400);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.page-label-badge{font-size:10px;background:var(--blue-lt);color:var(--blue-dk);padding:1px 7px;border-radius:10px;font-weight:700;}
+.stamp-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;width:100%;}
+.stamp-cell{aspect-ratio:1;border:1.5px solid var(--g200);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;background:white;overflow:hidden;cursor:pointer;transition:border-color .15s;}
+.stamp-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
+.stamp-cell:hover{border-color:var(--blue-md);}
+.stamp-cell.milestone{border-color:var(--amber-md);border-width:2px;}
+.stamp-cell.stamped{background:var(--blue-lt);border-color:var(--blue-md);border-width:2px;}
+.stamp-cell.stamped.milestone{background:var(--amber-lt);border-color:var(--amber);border-width:2px;}
+.stamp-icon{font-size:20px;color:var(--blue-md);line-height:1;}
+.stamp-cell.stamped .stamp-icon{color:var(--blue);}
+.stamp-cell.stamped.milestone .stamp-icon{color:var(--amber);}
+.cell-num{font-size:9px;color:var(--g300);position:absolute;bottom:2px;right:4px;line-height:1;font-weight:600;}
+.stamp-cell.milestone .cell-num{color:var(--amber-md);}
+.stamp-cell.stamped .cell-num{color:var(--blue-md);}
+.stamp-cell.stamped.milestone .cell-num{color:var(--amber);}
+.tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:white;border:1px solid var(--g200);border-radius:10px;padding:8px 12px;width:200px;z-index:30;box-shadow:0 4px 16px rgba(0,0,0,.12);pointer-events:none;}
+.stamp-cell:hover .tip{display:block;}
+.tip-memo{font-size:12px;color:var(--g600);}
+.tip-url{font-size:11px;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
+
+/* ── rewards ── */
+.rewards-header{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--g100);cursor:pointer;user-select:none;}
+.rewards-header-left{display:flex;align-items:center;gap:8px;}
+.rewards-title{font-size:13px;font-weight:600;color:var(--g600);}
+.rewards-summary{display:flex;gap:4px;}
+.rewards-arrow{font-size:12px;color:var(--g400);transition:transform .2s;}
+.rewards-arrow.open{transform:rotate(180deg);}
+.rewards-body{display:none;margin-top:8px;}
+.rewards-body.open{display:block;}
+.reward-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--g100);}
+.reward-row:first-child{border-top:none;}
+.reward-chip{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--g100);color:var(--g400);border:1px solid var(--g200);font-weight:600;white-space:nowrap;}
+.reward-chip.reached{background:var(--amber-lt);color:#92400e;border-color:var(--amber-md);}
+.reward-chip.given{background:var(--green-lt);color:#065f46;border-color:var(--green-md);}
+.reward-memo{font-size:12px;color:var(--g600);flex:1;}
+.reward-memo.empty{color:var(--g400);font-style:italic;}
+.rbtn{font-size:11px;padding:3px 8px;border:1px solid var(--g200);border-radius:6px;background:transparent;color:var(--g600);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.rbtn:hover{background:var(--g100);}
+
+/* ── modals ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:200;}
+.overlay.hidden{display:none;}
+.modal{background:white;border-radius:16px;padding:24px;width:390px;max-width:95vw;}
+.modal h3{font-size:16px;font-weight:600;margin-bottom:16px;}
+.modal label{display:block;font-size:13px;color:var(--g600);margin-bottom:4px;margin-top:12px;}
+.modal label:first-of-type{margin-top:0;}
+.modal input{width:100%;padding:9px 12px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:var(--g50);outline:none;}
+.modal input:focus{border-color:var(--blue);background:white;}
+.fill-notice{font-size:12px;color:var(--blue-dk);background:var(--blue-lt);border-radius:8px;padding:8px 10px;margin-bottom:12px;display:none;line-height:1.5;}
+.mbtns{display:flex;gap:8px;margin-top:16px;}
+.mbtns button{flex:1;padding:10px;border-radius:8px;font-size:14px;cursor:pointer;font-family:inherit;font-weight:500;}
+.btn-cancel{background:var(--g100);border:1px solid var(--g200);color:var(--g600);}
+.btn-confirm{background:var(--blue);border:none;color:white;}
+.btn-confirm:hover{background:var(--blue-dk);}
+.btn-danger{background:var(--red-lt);border:1px solid #fca5a5;color:var(--red);}
+
+.status{text-align:center;color:var(--g400);font-size:14px;padding:48px 0;}
+@media(max-width:600px){.stamp-grid{grid-template-columns:repeat(6,1fr);}.goods-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">밍쑨 <em>핫클립</em> 쿠폰<small>관리자</small></div>
+  <div class="hdr-r">
+    <a href="index.html" class="btn-sm">일반 조회</a>
+    <button class="btn-sm" id="logoutBtn" onclick="logout()" style="display:none;">로그아웃</button>
+  </div>
+</header>
+<main>
+  <!-- 로그인 -->
+  <div id="loginBox" class="login-card">
+    <h2>관리자 로그인</h2>
+    <p>밍쑨 핫클립 쿠폰 관리자 전용 페이지입니다.</p>
+    <div class="row">
+      <input type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')checkPw()">
+      <button class="btn-blue" onclick="checkPw()">로그인</button>
+    </div>
+    <div class="err" id="pwErr">비밀번호가 틀렸습니다.</div>
+  </div>
+
+  <div id="adminWrap">
+    <div class="goods-banner">
+  <div class="goods-banner-header" onclick="toggleAdminGoods()" style="cursor:pointer;justify-content:space-between;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <h2>🎁 핫클립 굿즈 안내</h2>
+      <span class="goods-badge">도장 3개마다 보상</span>
+    </div>
+    <span id="adminGoodsArrow" style="font-size:12px;color:var(--g400);transition:transform .2s;">▼</span>
+  </div>
+  <div id="adminGoodsBody" style="display:none;">
+  <div class="goods-intro">
+    쿠폰에 <strong>도장 3개마다</strong> 찍혀 있는 분에 한하여 지급하는 전용 굿즈입니다.<br>
+    굿즈 배송은 제작 후 팬심을 통해 보내는 과정이 있어 <strong>일정 시간이 소요</strong>됩니다.<br>
+    처음 진행하는 것이다 보니 중간에 진행 방식이 변경될 수 있습니다.<br>
+    자세한 내용은 <a href="https://cafe.naver.com/chzzkisland/11330" target="_blank">카페 게시글</a>을 참고해주세요.
+    <div class="goods-notice">신청 시 <strong>[밍쑨 리워드]</strong>에 글 비밀 메모 남겨주세요!</div>
+  </div>
+  <div class="goods-grid">
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods1.png" alt="맥세이프 카드 지갑">
+      <div class="goods-num">No.1</div>
+      <div class="goods-name">밍식이 맥세이프 카드 지갑</div>
+      <div class="goods-desc">맥세이프 기능이 있어야 사용 가능<br>(아이폰 or 맥세이프 케이스)</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods2.png" alt="웃식이 티셔츠">
+      <div class="goods-num">No.2</div>
+      <div class="goods-name">웃식이 티셔츠</div>
+      <div class="goods-desc">사이즈: S / M / L / XL / 2XL / 3XL<br>두께: 두꺼운거 / 얇은거<br>색상: 화이트 / 블랙</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods3.png" alt="키치 밍식이 티셔츠">
+      <div class="goods-num">No.3</div>
+      <div class="goods-name">키치 밍식이 티셔츠</div>
+      <div class="goods-desc">사이즈: S / M / L / XL / 2XL / 3XL<br>두께: 두꺼운거 / 얇은거<br>색상: 화이트 / 블랙</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods4.png" alt="밍쑨이 뚝배기 펜 받침대">
+      <div class="goods-num">No.4</div>
+      <div class="goods-name">밍쑨이 뚝배기 펜 받침대</div>
+      <div class="goods-desc">회사에서 보고 있으면 귀엽습니다...</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods5.png" alt="표독쑨이 뚝배기 펜 받침대">
+      <div class="goods-num">No.5</div>
+      <div class="goods-name">표독쑨이 뚝배기 펜 받침대</div>
+      <div class="goods-desc">위와 동일</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods6.png" alt="내열 블럭컵">
+      <div class="goods-num">No.6</div>
+      <div class="goods-name">밍쑨밍식 내열 블럭컵 (390ml)</div>
+      <div class="goods-desc">너무너무 기엽다 나도 갖고싶다 유리컵</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods7.png" alt="내열 유리 머그컵">
+      <div class="goods-num">No.7</div>
+      <div class="goods-name">밍쑨밍식 내열 유리 머그컵 (300ml)</div>
+      <div class="goods-desc">너무너무 기엽다 나도 갖고싶다 머그컵</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods8.png" alt="밍쑨 장패드">
+      <div class="goods-num special">No.8 ✦ 쿠폰 3장</div>
+      <div class="goods-name">밍쑨 장패드</div>
+      <div class="goods-desc">다른 굿즈들에 비해 비용이 많이 들어가<br>쿠폰 3장으로 책정되었습니다!</div>
+    </div>
+  </div>
+  <div class="goods-footer">
+    항상 클립 따주셔서 정말 감사합니다 🩵 이렇게라도, 작게나마 보답이 되었으면 좋겠습니다!
+  </div>
+  </div><!-- /adminGoodsBody -->
+</div>
+
+    <div class="sec-label">참여자 추가</div>
+    <div class="add-form">
+      <input type="text" id="newName" placeholder="닉네임 입력" onkeydown="if(event.key==='Enter')addUser()">
+      <button onclick="addUser()">+ 추가</button>
+    </div>
+    <div class="admin-controls">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="adminSearch" placeholder="닉네임 검색" oninput="render()">
+      </div>
+      <div class="sort-group">
+        <button class="sort-btn active" id="asort-name" onclick="setAdminSort('name')">가나다순</button>
+        <button class="sort-btn" id="asort-stamp" onclick="setAdminSort('stamp')">도장순</button>
+        <button class="sort-btn" id="asort-recent" onclick="setAdminSort('recent')">최신순</button>
+      </div>
+    </div>
+    <div id="userList"><div class="status">불러오는 중...</div></div>
+  </div>
+</main>
+
+<!-- 도장 모달 -->
+<div class="overlay hidden" id="stampModal" onclick="if(event.target===this)closeModal('stampModal')">
+  <div class="modal">
+    <h3 id="stampTitle">도장</h3>
+    <div class="fill-notice" id="fillNotice"></div>
+    <label>메모 (선택)</label>
+    <input type="text" id="sMemo" placeholder="예: 7월 핫클립 주인공!">
+    <label>치지직 클립 URL (선택)</label>
+    <input type="text" id="sUrl" placeholder="https://chzzk.naver.com/clips/...">
+    <div class="mbtns">
+      <button class="btn-cancel" onclick="closeModal('stampModal')">취소</button>
+      <button class="btn-danger" id="stampDelBtn" onclick="deleteStamp()" style="display:none;">도장 삭제</button>
+      <button class="btn-confirm" onclick="confirmStamp()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 닉네임 수정 모달 -->
+<div class="overlay hidden" id="nameModal" onclick="if(event.target===this)closeModal('nameModal')">
+  <div class="modal">
+    <h3>닉네임 수정</h3>
+    <label>새 닉네임</label>
+    <input type="text" id="newNick" placeholder="닉네임 입력">
+    <div class="mbtns">
+      <button class="btn-cancel" onclick="closeModal('nameModal')">취소</button>
+      <button class="btn-confirm" onclick="confirmName()">저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- 보상 모달 -->
+<div class="overlay hidden" id="rewardModal" onclick="if(event.target===this)closeModal('rewardModal')">
+  <div class="modal">
+    <h3 id="rewardTitle">보상 처리</h3>
+    <label>어떤 보상을 줬나요? (선택)</label>
+    <input type="text" id="rewardNote" placeholder="예: 웃식이 티셔츠 M사이즈">
+    <div class="mbtns">
+      <button class="btn-cancel" onclick="closeModal('rewardModal')">취소</button>
+      <button class="btn-danger" id="rewardRevokeBtn" onclick="revokeReward()" style="display:none;">지급 취소</button>
+      <button class="btn-confirm" onclick="confirmReward()">지급 완료</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, deleteDoc }
+  from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMKN1rwiMBrR0XFxUYH09M6yxPlQHhZhI",
+  authDomain: "mingsoon-coupon.firebaseapp.com",
+  projectId: "mingsoon-coupon",
+  storageBucket: "mingsoon-coupon.firebasestorage.app",
+  messagingSenderId: "306496994985",
+  appId: "1:306496994985:web:8273eca34a761e356673b8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const PW = "!m75978070";
+const PAGE_SIZE = 30;
+const MILESTONES = new Set([3,6,9,12,15,18,21,24,27,30]);
+
+let allUsers = [];
+let pendingStamp = null, pendingName = null, pendingReward = null;
+let unsubscribe = null;
+const rewardOpen = {};
+let goodsOpen = false;
+let adminSort = 'name';
+
+window.setAdminSort = s => {
+  adminSort = s;
+  document.querySelectorAll('[id^="asort-"]').forEach(b => b.classList.remove('active'));
+  document.getElementById('asort-' + s).classList.add('active');
+  render();
+};
+
+window.toggleAdminGoods = () => {
+  const body = document.getElementById('adminGoodsBody');
+  const arrow = document.getElementById('adminGoodsArrow');
+  const open = body.style.display === 'none';
+  body.style.display = open ? 'block' : 'none';
+  arrow.style.transform = open ? 'rotate(180deg)' : '';
+};
+
+
+// ── auth ──
+window.checkPw = () => {
+  if (document.getElementById('pwInput').value === PW) {
+    document.getElementById('loginBox').style.display = 'none';
+    document.getElementById('adminWrap').style.display = 'block';
+    document.getElementById('logoutBtn').style.display = 'inline-block';
+    document.getElementById('pwErr').style.display = 'none';
+    startListener();
+  } else {
+    document.getElementById('pwErr').style.display = 'block';
+  }
+};
+window.logout = () => {
+  if (unsubscribe) unsubscribe();
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('loginBox').style.display = 'block';
+  document.getElementById('logoutBtn').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+};
+function startListener() {
+  unsubscribe = onSnapshot(collection(db, 'users'), snap => {
+    allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    render();
+  });
+}
+
+// ── user CRUD ──
+window.addUser = async () => {
+  const n = document.getElementById('newName').value.trim();
+  if (!n) return;
+  const id = Date.now().toString();
+  await setDoc(doc(db, 'users', id), { name: n, stamps: [], rewards: {}, createdAt: Date.now() });
+  document.getElementById('newName').value = '';
+};
+window.removeUser = async (id, name) => {
+  if (!confirm(name + ' 님을 삭제하시겠습니까?')) return;
+  await deleteDoc(doc(db, 'users', id));
+};
+
+// ── stamp modal ──
+window.openStampModal = (id, gi) => {
+  const u = allUsers.find(u => u.id === id);
+  const stamps = u.stamps || [];
+  const s = stamps[gi];
+  pendingStamp = { id, gi };
+
+  // 앞에 비어있는 칸 수 계산
+  let emptyBefore = 0;
+  for (let i = 0; i < gi; i++) { if (!stamps[i]) emptyBefore++; }
+
+  document.getElementById('stampTitle').textContent =
+    u.name + ' · ' + (gi+1) + '번 도장' + (s ? ' 수정' : '');
+
+  const notice = document.getElementById('fillNotice');
+  if (!s && emptyBefore > 0) {
+    notice.textContent = `⚡ 앞의 빈 칸 ${emptyBefore}개 (1~${gi}번)도 자동으로 채워집니다.`;
+    notice.style.display = 'block';
+  } else {
+    notice.style.display = 'none';
+  }
+
+  document.getElementById('sMemo').value = s ? s.memo || '' : '';
+  document.getElementById('sUrl').value = s ? s.url || '' : '';
+  document.getElementById('stampDelBtn').style.display = s ? 'block' : 'none';
+  document.getElementById('stampModal').classList.remove('hidden');
+};
+
+window.confirmStamp = async () => {
+  if (!pendingStamp) return;
+  const { id, gi } = pendingStamp;
+  const u = allUsers.find(u => u.id === id);
+  const stamps = [...(u.stamps || [])];
+  const today = new Date().toLocaleDateString('ko-KR');
+  while (stamps.length <= gi) stamps.push(null);
+  // 앞 빈 칸 자동 채움
+  for (let i = 0; i < gi; i++) {
+    if (!stamps[i]) stamps[i] = { memo: '', url: '', date: today };
+  }
+  stamps[gi] = {
+    memo: document.getElementById('sMemo').value.trim(),
+    url: document.getElementById('sUrl').value.trim(),
+    date: today
+  };
+  await updateDoc(doc(db, 'users', id), { stamps });
+  closeModal('stampModal');
+};
+
+window.deleteStamp = async () => {
+  if (!pendingStamp) return;
+  const { id, gi } = pendingStamp;
+  const u = allUsers.find(u => u.id === id);
+  const stamps = [...(u.stamps || [])];
+  stamps[gi] = null;
+  await updateDoc(doc(db, 'users', id), { stamps });
+  closeModal('stampModal');
+};
+
+// ── name modal ──
+window.openNameModal = (id) => {
+  pendingName = id;
+  document.getElementById('newNick').value = allUsers.find(u => u.id === id).name;
+  document.getElementById('nameModal').classList.remove('hidden');
+};
+window.confirmName = async () => {
+  if (!pendingName) return;
+  const n = document.getElementById('newNick').value.trim();
+  if (!n) return;
+  await updateDoc(doc(db, 'users', pendingName), { name: n });
+  closeModal('nameModal');
+};
+
+// ── reward modal ──
+window.openRewardModal = (id, ri) => {
+  pendingReward = { id, ri };
+  const u = allUsers.find(u => u.id === id);
+  const given = u.rewards?.[ri];
+  document.getElementById('rewardTitle').textContent = u.name + ' · ' + (ri+1)*3 + '번째 보상';
+  document.getElementById('rewardNote').value = given ? given.note || '' : '';
+  document.getElementById('rewardRevokeBtn').style.display = given ? 'block' : 'none';
+  document.getElementById('rewardModal').classList.remove('hidden');
+};
+window.confirmReward = async () => {
+  if (!pendingReward) return;
+  const { id, ri } = pendingReward;
+  const u = allUsers.find(u => u.id === id);
+  const rewards = { ...(u.rewards || {}) };
+  rewards[ri] = { note: document.getElementById('rewardNote').value.trim(), date: new Date().toLocaleDateString('ko-KR') };
+  await updateDoc(doc(db, 'users', id), { rewards });
+  closeModal('rewardModal');
+};
+window.revokeReward = async () => {
+  if (!pendingReward) return;
+  const { id, ri } = pendingReward;
+  const u = allUsers.find(u => u.id === id);
+  const rewards = { ...(u.rewards || {}) };
+  delete rewards[ri];
+  await updateDoc(doc(db, 'users', id), { rewards });
+  closeModal('rewardModal');
+};
+window.closeModal = (id) => {
+  document.getElementById(id).classList.add('hidden');
+  pendingStamp = pendingName = pendingReward = null;
+};
+
+// ── 보상 접기/펼치기 ──
+window.toggleReward = (uid) => {
+  rewardOpen[uid] = !rewardOpen[uid];
+  const body = document.getElementById('rw-body-' + uid);
+  const arrow = document.getElementById('rw-arrow-' + uid);
+  if (body) {
+    body.classList.toggle('open', rewardOpen[uid]);
+    arrow.classList.toggle('open', rewardOpen[uid]);
+  }
+};
+
+// ── render ──
+window.render = function render() {
+  const el = document.getElementById('userList');
+  const scrollY = window.scrollY;
+
+  const searchEl = document.getElementById('adminSearch');
+  const q = searchEl ? searchEl.value.trim().toLowerCase() : '';
+  let users = allUsers.filter(u => !q || u.name.toLowerCase().includes(q));
+
+  if (adminSort === 'name') users.sort((a,b) => a.name.localeCompare(b.name,'ko'));
+  else if (adminSort === 'stamp') users.sort((a,b) => (b.stamps||[]).filter(Boolean).length - (a.stamps||[]).filter(Boolean).length);
+  else users.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+  if (!users.length) { el.innerHTML = '<div class="status">' + (q ? '검색 결과가 없습니다.' : '아직 참여자가 없습니다.') + '</div>'; return; }
+
+  el.innerHTML = users.map(u => {
+    const stamps = u.stamps || [];
+    const count = stamps.filter(Boolean).length;
+    const rewards = u.rewards || {};
+    const givenCount = Object.keys(rewards).length;
+
+    // 현재 도장 수 기준 페이지 계산 (30개 다 찍히면 다음 페이지 추가)
+    const currentPage = Math.floor(count / PAGE_SIZE);
+    const totalPages = currentPage + 1;
+
+    let pagesHtml = '';
+    for (let p = 0; p < totalPages; p++) {
+      const pageStart = p * PAGE_SIZE + 1;
+      const pageEnd = pageStart + PAGE_SIZE - 1;
+      const cells = Array.from({length: PAGE_SIZE}, (_, i) => {
+        const gi = p * PAGE_SIZE + i;
+        const localIdx = i + 1;
+        const s = stamps[gi];
+        const mile = MILESTONES.has(localIdx);
+        let cls = 'stamp-cell' + (s ? ' stamped' : '') + (mile ? ' milestone' : '');
+        const tip = s && (s.memo || s.url)
+          ? `<div class="tip">${s.memo ? `<div class="tip-memo">${s.memo}</div>` : ''}${s.url ? `<div class="tip-url">${s.url.replace('https://','')}</div>` : ''}</div>`
+          : '';
+        return `<div class="${cls}" onclick="openStampModal('${u.id}',${gi})"><div class="stamp-inner">${s ? '<span class="stamp-icon">★</span>' : ''}</div><span class="cell-num">${gi+1}</span>${tip}</div>`;
+      }).join('');
+      const labelHtml = totalPages > 1
+        ? `<div class="page-label"><span class="page-label-badge">${pageStart}~${pageEnd}번</span> 쿠폰 ${p+1}장째</div>`
+        : '';
+      pagesHtml += `<div class="stamp-page">${labelHtml}<div class="stamp-grid">${cells}</div></div>`;
+    }
+
+    // 보상 슬롯
+    const totalRewardSlots = PAGE_SIZE * totalPages / 3;
+    const reachedCount = Array.from({length: totalRewardSlots}, (_,ri) => count>=(ri+1)*3).filter(Boolean).length;
+    const rewardRows = Array.from({length: totalRewardSlots}, (_, ri) => {
+      const needed = (ri+1)*3;
+      const reached = count >= needed;
+      const given = rewards[ri];
+      return `<div class="reward-row">
+        <div class="reward-chip${given?' given':reached?' reached':''}">${given?'✓ 지급완료':reached?`${needed}번째 가능`:`${needed}번째`}</div>
+        ${given
+          ? `<span class="reward-memo">${given.note||'메모 없음'} <span style="color:var(--g400);font-size:11px;">(${given.date})</span></span>`
+          : '<span class="reward-memo empty">미지급</span>'}
+        ${reached ? `<button class="rbtn" onclick="openRewardModal('${u.id}',${ri})">${given?'수정':'지급 처리'}</button>` : ''}
+      </div>`;
+    }).join('');
+
+    const summaryHtml = `
+      <span style="font-size:11px;padding:2px 7px;border-radius:12px;background:var(--amber-lt);color:#92400e;border:1px solid var(--amber-md);font-weight:600;">가능 ${reachedCount}</span>
+      <span style="font-size:11px;padding:2px 7px;border-radius:12px;background:var(--green-lt);color:#065f46;border:1px solid var(--green-md);font-weight:600;">지급 ${givenCount}</span>
+    `;
+    const isOpen = !!rewardOpen[u.id];
+
+    return `<div class="user-card">
+      <div class="card-top">
+        <div class="uinfo">
+          <div class="avatar">${u.name[0]}</div>
+          <div><div class="uname">${u.name}</div><div class="usub">도장 ${count}개 · 보상 ${givenCount}회 지급</div></div>
+        </div>
+        <div class="card-btns">
+          <button class="ibtn" onclick="openNameModal('${u.id}')">닉네임 수정</button>
+          <button class="ibtn danger" onclick="removeUser('${u.id}','${u.name}')">삭제</button>
+        </div>
+      </div>
+      ${pagesHtml}
+      <div class="rewards-header" onclick="toggleReward('${u.id}')">
+        <div class="rewards-header-left">
+          <span class="rewards-title">보상 목록</span>
+          <div class="rewards-summary">${summaryHtml}</div>
+        </div>
+        <span class="rewards-arrow${isOpen?' open':''}" id="rw-arrow-${u.id}">▼</span>
+      </div>
+      <div class="rewards-body${isOpen?' open':''}" id="rw-body-${u.id}">${rewardRows}</div>
+    </div>`;
+  }).join('');
+  window.scrollTo({top: scrollY, behavior: 'instant'});
+}
+</script>
+</body>
+</html>

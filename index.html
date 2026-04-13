@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>밍쑨 핫클립 쿠폰</title>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:'Pretendard',-apple-system,sans-serif;}
+:root{
+  --blue:#2563eb;--blue-lt:#dbeafe;--blue-md:#93c5fd;--blue-dk:#1d4ed8;
+  --g50:#f9fafb;--g100:#f3f4f6;--g200:#e5e7eb;--g300:#d1d5db;
+  --g400:#9ca3af;--g600:#4b5563;--g800:#1f2937;
+  --amber:#f59e0b;--amber-lt:#fef3c7;--amber-md:#fde68a;
+  --green:#059669;--green-lt:#d1fae5;--green-md:#6ee7b7;
+}
+body{background:#f8fafc;min-height:100vh;color:var(--g800);}
+header{background:white;border-bottom:1px solid var(--g200);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;}
+.logo{font-size:18px;font-weight:600;letter-spacing:-.3px;}
+.logo em{color:var(--blue);font-style:normal;}
+.btn-sm{font-size:13px;padding:6px 14px;border:1px solid var(--g200);border-radius:8px;background:transparent;color:var(--g600);cursor:pointer;font-family:inherit;text-decoration:none;display:inline-block;}
+.btn-sm:hover{background:var(--g100);}
+main{max-width:960px;margin:0 auto;padding:24px 16px;}
+
+/* 굿즈 배너 - 항상 펼침 */
+.goods-banner{background:white;border:1px solid var(--g200);border-radius:14px;margin-bottom:24px;overflow:hidden;}
+.goods-banner-header{display:flex;align-items:center;gap:10px;padding:16px 20px;border-bottom:1px solid var(--g100);}
+.goods-banner-header h2{font-size:15px;font-weight:600;color:var(--g800);}
+.goods-badge{font-size:11px;background:var(--blue-lt);color:var(--blue-dk);padding:2px 8px;border-radius:20px;font-weight:600;border:1px solid var(--blue-md);}
+.goods-intro{background:var(--g50);padding:14px 20px;font-size:13px;color:var(--g600);line-height:1.8;border-bottom:1px solid var(--g100);}
+.goods-intro strong{color:var(--blue);font-weight:600;}
+.goods-intro a{color:var(--blue);text-decoration:none;font-weight:600;}
+.goods-intro a:hover{text-decoration:underline;}
+.goods-notice{font-size:12px;color:var(--g400);margin-top:8px;padding-top:8px;border-top:1px dashed var(--g200);}
+.goods-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--g100);}
+.goods-item{background:white;padding:16px 18px;}
+.goods-thumb{width:100%;aspect-ratio:1;object-fit:contain;border-radius:8px;background:var(--g50);margin-bottom:10px;}
+.goods-num{font-size:10px;font-weight:700;color:var(--blue);background:var(--blue-lt);border-radius:20px;padding:2px 7px;display:inline-block;margin-bottom:6px;}
+.goods-num.special{color:#92400e;background:var(--amber-lt);border:1px solid var(--amber-md);}
+.goods-name{font-size:14px;font-weight:600;color:var(--g800);margin-bottom:4px;line-height:1.4;}
+.goods-desc{font-size:12px;color:var(--g400);line-height:1.6;}
+.goods-footer{padding:12px 20px;background:var(--g50);border-top:1px solid var(--g100);font-size:12px;color:var(--g600);text-align:center;line-height:1.6;}
+
+/* controls */
+.controls{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;align-items:center;}
+.search-wrap{flex:1;min-width:160px;position:relative;}
+.search-wrap input{width:100%;padding:9px 12px 9px 36px;border:1px solid var(--g200);border-radius:8px;font-size:14px;font-family:inherit;background:white;outline:none;}
+.search-wrap input:focus{border-color:var(--blue);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:var(--g400);pointer-events:none;}
+.sort-group{display:flex;gap:4px;}
+.sort-btn{font-size:13px;padding:6px 12px;border:1px solid var(--g200);border-radius:8px;background:white;color:var(--g600);cursor:pointer;font-family:inherit;transition:all .15s;}
+.sort-btn.active{background:var(--blue);color:white;border-color:var(--blue);}
+
+/* user card */
+.user-card{background:white;border:1px solid var(--g200);border-radius:14px;padding:20px;margin-bottom:14px;}
+.card-top{display:flex;align-items:center;margin-bottom:16px;}
+.uinfo{display:flex;align-items:center;gap:12px;}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--blue-lt);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--blue-dk);flex-shrink:0;}
+.uname{font-size:16px;font-weight:600;}
+.usub{font-size:13px;color:var(--g400);margin-top:1px;}
+
+/* stamp */
+.stamp-page{margin-bottom:10px;overflow:hidden;}
+.page-label{font-size:11px;color:var(--g400);font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:6px;}
+.page-label-badge{font-size:10px;background:var(--blue-lt);color:var(--blue-dk);padding:1px 7px;border-radius:10px;font-weight:700;}
+.stamp-grid{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;width:100%;}
+.stamp-cell{aspect-ratio:1;border:1.5px solid var(--g200);border-radius:10px;display:flex;align-items:center;justify-content:center;position:relative;background:white;overflow:hidden;}
+.stamp-inner{width:100%;height:100%;display:flex;align-items:center;justify-content:center;position:relative;}
+
+
+
+.stamp-icon{font-size:20px;color:var(--blue-md);line-height:1;}
+.stamp-cell.milestone{border-color:var(--amber-md);border-width:2px;}
+.stamp-cell.stamped{background:var(--blue-lt);border-color:var(--blue-md);border-width:2px;}
+.stamp-cell.stamped.milestone{background:var(--amber-lt);border-color:var(--amber);border-width:2px;}
+.stamp-cell.stamped .stamp-icon{color:var(--blue);}
+.stamp-cell.stamped.milestone .stamp-icon{color:var(--amber);}
+.stamp-cell{cursor:pointer;}
+.cell-num{font-size:9px;color:var(--g300);position:absolute;bottom:2px;right:4px;line-height:1;font-weight:600;}
+.stamp-cell.milestone .cell-num{color:var(--amber-md);}
+.stamp-cell.stamped .cell-num{color:var(--blue-md);}
+.stamp-cell.stamped.milestone .cell-num{color:var(--amber);}
+
+/* 말풍선 hover */
+.stamp-bubble{display:none;position:fixed;background:white;border:1px solid var(--g200);border-radius:10px;padding:8px 12px;width:180px;z-index:50;box-shadow:0 4px 14px rgba(0,0,0,.1);pointer-events:none;transform:translateX(-50%);}
+
+
+.bubble-num{font-size:11px;font-weight:600;color:var(--blue);margin-bottom:3px;}
+.bubble-memo{font-size:12px;color:var(--g600);line-height:1.5;word-break:break-all;}
+.bubble-url{font-size:11px;color:var(--blue);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;display:block;}
+.bubble-hint{font-size:10px;color:var(--g400);margin-top:4px;font-style:italic;}
+
+/* 클릭 팝업 모달 */
+.stamp-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;z-index:999;}
+.stamp-modal-overlay.hidden{display:none;}
+.stamp-modal{background:white;border-radius:16px;padding:20px;width:320px;max-width:92vw;position:relative;}
+.stamp-modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.stamp-modal-title{font-size:15px;font-weight:600;color:var(--g800);}
+.stamp-modal-close{width:28px;height:28px;border-radius:50%;border:1px solid var(--g200);background:var(--g100);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;color:var(--g600);}
+.stamp-modal-close:hover{background:var(--g200);}
+.stamp-modal-date{font-size:12px;color:var(--g400);margin-bottom:10px;}
+.stamp-modal-memo{font-size:14px;color:var(--g800);line-height:1.6;margin-bottom:10px;}
+.stamp-modal-url{font-size:13px;color:var(--blue);word-break:break-all;text-decoration:none;display:block;}
+.stamp-modal-url:hover{text-decoration:underline;}
+.stamp-modal-empty{font-size:13px;color:var(--g400);font-style:italic;}
+.stamp-modal-dot{width:10px;height:10px;border-radius:50%;background:#7dd3fc;display:inline-block;margin-right:6px;vertical-align:middle;}
+.stamp-modal-dot.milestone{background:#fde68a;}
+
+/* rewards */
+.rewards-header{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:12px;border-top:1px solid var(--g100);cursor:pointer;user-select:none;}
+.rewards-header-left{display:flex;align-items:center;gap:8px;}
+.rewards-title{font-size:13px;font-weight:600;color:var(--g600);}
+.rewards-summary{display:flex;gap:4px;}
+.rewards-arrow{font-size:12px;color:var(--g400);transition:transform .2s;}
+.rewards-arrow.open{transform:rotate(180deg);}
+.rewards-body{display:none;margin-top:8px;}
+.rewards-body.open{display:block;}
+.reward-row{display:flex;align-items:center;gap:8px;padding:5px 0;border-top:1px solid var(--g100);}
+.reward-row:first-child{border-top:none;}
+.reward-chip{font-size:11px;padding:3px 10px;border-radius:20px;background:var(--g100);color:var(--g400);border:1px solid var(--g200);font-weight:600;white-space:nowrap;}
+.reward-chip.reached{background:var(--amber-lt);color:#92400e;border-color:var(--amber-md);}
+.reward-chip.given{background:var(--green-lt);color:#065f46;border-color:var(--green-md);}
+.reward-memo{font-size:12px;color:var(--g600);flex:1;}
+.reward-memo.empty{color:var(--g400);font-style:italic;}
+.status{text-align:center;color:var(--g400);font-size:14px;padding:48px 0;}
+@media(max-width:600px){.stamp-grid{grid-template-columns:repeat(6,1fr);}.controls{flex-direction:column;align-items:stretch;}.goods-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">밍쑨 <em>핫클립</em> 쿠폰</div>
+  <a href="admin.html" class="btn-sm">관리자</a>
+</header>
+<main>
+
+<div class="goods-banner">
+  <div class="goods-banner-header">
+    <h2>🎁 핫클립 굿즈 안내</h2>
+    <span class="goods-badge">도장 3개마다 보상</span>
+  </div>
+  <div class="goods-intro">
+    쿠폰에 <strong>도장 3개마다</strong> 찍혀 있는 분에 한하여 지급하는 전용 굿즈입니다.<br>
+    굿즈 배송은 제작 후 팬심을 통해 보내는 과정이 있어 <strong>일정 시간이 소요</strong>됩니다.<br>
+    처음 진행하는 것이다 보니 중간에 진행 방식이 변경될 수 있습니다.<br>
+    자세한 내용은 <a href="https://cafe.naver.com/chzzkisland/11330" target="_blank">카페 게시글</a>을 참고해주세요.
+    <div class="goods-notice">신청 시 <strong>[밍쑨 리워드]</strong>에 글 비밀 메모 남겨주세요!</div>
+  </div>
+  <div class="goods-grid">
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods1.png" alt="맥세이프 카드 지갑">
+      <div class="goods-num">No.1</div>
+      <div class="goods-name">밍식이 맥세이프 카드 지갑</div>
+      <div class="goods-desc">맥세이프 기능이 있어야 사용 가능<br>(아이폰 or 맥세이프 케이스)</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods2.png" alt="웃식이 티셔츠">
+      <div class="goods-num">No.2</div>
+      <div class="goods-name">웃식이 티셔츠</div>
+      <div class="goods-desc">사이즈: S / M / L / XL / 2XL / 3XL<br>두께: 두꺼운거 / 얇은거<br>색상: 화이트 / 블랙</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods3.png" alt="키치 밍식이 티셔츠">
+      <div class="goods-num">No.3</div>
+      <div class="goods-name">키치 밍식이 티셔츠</div>
+      <div class="goods-desc">사이즈: S / M / L / XL / 2XL / 3XL<br>두께: 두꺼운거 / 얇은거<br>색상: 화이트 / 블랙</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods4.png" alt="밍쑨이 뚝배기 펜 받침대">
+      <div class="goods-num">No.4</div>
+      <div class="goods-name">밍쑨이 뚝배기 펜 받침대</div>
+      <div class="goods-desc">회사에서 보고 있으면 귀엽습니다...</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods5.png" alt="표독쑨이 뚝배기 펜 받침대">
+      <div class="goods-num">No.5</div>
+      <div class="goods-name">표독쑨이 뚝배기 펜 받침대</div>
+      <div class="goods-desc">위와 동일</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods6.png" alt="내열 블럭컵">
+      <div class="goods-num">No.6</div>
+      <div class="goods-name">밍쑨밍식 내열 블럭컵 (390ml)</div>
+      <div class="goods-desc">너무너무 기엽다 나도 갖고싶다 유리컵</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods7.png" alt="내열 유리 머그컵">
+      <div class="goods-num">No.7</div>
+      <div class="goods-name">밍쑨밍식 내열 유리 머그컵 (300ml)</div>
+      <div class="goods-desc">너무너무 기엽다 나도 갖고싶다 머그컵</div>
+    </div>
+    <div class="goods-item">
+      <img class="goods-thumb" src="images/goods8.png" alt="밍쑨 장패드">
+      <div class="goods-num special">No.8 ✦ 쿠폰 3장</div>
+      <div class="goods-name">밍쑨 장패드</div>
+      <div class="goods-desc">다른 굿즈들에 비해 비용이 많이 들어가<br>쿠폰 3장으로 책정되었습니다!</div>
+    </div>
+  </div>
+  <div class="goods-footer">
+    항상 클립 따주셔서 정말 감사합니다 🩵 이렇게라도, 작게나마 보답이 되었으면 좋겠습니다!
+  </div>
+</div>
+
+<div class="controls">
+  <div class="search-wrap">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="닉네임 검색" oninput="renderList()">
+  </div>
+  <div class="sort-group">
+    <button class="sort-btn active" id="sort-name" onclick="setSort('name')">가나다순</button>
+    <button class="sort-btn" id="sort-stamp" onclick="setSort('stamp')">도장순</button>
+    <button class="sort-btn" id="sort-recent" onclick="setSort('recent')">최신순</button>
+  </div>
+</div>
+<div id="userList"><div class="status">불러오는 중...</div></div>
+</main>
+
+<!-- 도장 클릭 팝업 -->
+<div class="stamp-modal-overlay hidden" id="stampPopup" onclick="if(event.target===this)closeStampPopup()">
+  <div class="stamp-modal">
+    <div class="stamp-modal-header">
+      <div class="stamp-modal-title" id="popupTitle"></div>
+      <div class="stamp-modal-close" onclick="closeStampPopup()">✕</div>
+    </div>
+    <div id="popupContent"></div>
+  </div>
+</div>
+
+<script>
+function openStampPopup(el) {
+  const num = el.dataset.num;
+  const memo = el.dataset.memo || '';
+  const url = el.dataset.url || '';
+  const date = el.dataset.date || '';
+  const mile = el.dataset.mile === '1';
+  const dot = mile ? 'milestone' : '';
+  document.getElementById('popupTitle').innerHTML =
+    '<span class="stamp-modal-dot '+dot+'"></span>' + num + '번 도장';
+  let html = '';
+  if (date) html += '<div class="stamp-modal-date">📅 ' + date + '</div>';
+  if (memo) html += '<div class="stamp-modal-memo">💬 ' + memo + '</div>';
+  if (url) html += '<a class="stamp-modal-url" href="' + url + '" target="_blank">🎬 ' + url.replace('https://','') + '</a>';
+  if (!memo && !url) html += '<div class="stamp-modal-empty">메모가 없습니다.</div>';
+  document.getElementById('popupContent').innerHTML = html;
+  document.getElementById('stampPopup').classList.remove('hidden');
+}
+function showBubble(el) {
+  const bubble = el.querySelector('.stamp-bubble');
+  if (!bubble) return;
+  const rect = el.getBoundingClientRect();
+  bubble.style.display = 'block';
+  bubble.style.left = (rect.left + rect.width / 2) + 'px';
+  bubble.style.top = (rect.top + window.scrollY - bubble.offsetHeight - 10) + 'px';
+}
+function hideBubble(el) {
+  const bubble = el.querySelector('.stamp-bubble');
+  if (bubble) bubble.style.display = 'none';
+}
+function closeStampPopup() {
+  document.getElementById('stampPopup').classList.add('hidden');
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAMKN1rwiMBrR0XFxUYH09M6yxPlQHhZhI",
+  authDomain: "mingsoon-coupon.firebaseapp.com",
+  projectId: "mingsoon-coupon",
+  storageBucket: "mingsoon-coupon.firebasestorage.app",
+  messagingSenderId: "306496994985",
+  appId: "1:306496994985:web:8273eca34a761e356673b8"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const PAGE_SIZE = 30;
+const MILESTONES = new Set([3,6,9,12,15,18,21,24,27,30]);
+let allUsers = [];
+let currentSort = 'name';
+const rewardOpen = {};
+
+window.setSort = s => {
+  currentSort = s;
+  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('sort-' + s).classList.add('active');
+  renderList();
+};
+
+window.toggleReward = (uid) => {
+  rewardOpen[uid] = !rewardOpen[uid];
+  const body = document.getElementById('rw-body-' + uid);
+  const arrow = document.getElementById('rw-arrow-' + uid);
+  if (body) { body.classList.toggle('open', rewardOpen[uid]); arrow.classList.toggle('open', rewardOpen[uid]); }
+};
+
+window.renderList = () => {
+  const scrollY = window.scrollY;
+  let users = [...allUsers];
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (q) users = users.filter(u => u.name.toLowerCase().includes(q));
+  if (currentSort === 'name') users.sort((a,b) => a.name.localeCompare(b.name,'ko'));
+  else if (currentSort === 'stamp') users.sort((a,b) => (b.stamps||[]).filter(Boolean).length - (a.stamps||[]).filter(Boolean).length);
+  else users.sort((a,b) => (b.createdAt||0) - (a.createdAt||0));
+
+  const el = document.getElementById('userList');
+  if (!users.length) { el.innerHTML = '<div class="status">해당하는 참여자가 없습니다.</div>'; return; }
+
+  el.innerHTML = users.map(u => {
+    const stamps = u.stamps || [];
+    const count = stamps.filter(Boolean).length;
+    const rewards = u.rewards || {};
+    const givenCount = Object.keys(rewards).length;
+    const totalPages = Math.floor(count / PAGE_SIZE) + 1;
+
+    let pagesHtml = '';
+    for (let p = 0; p < totalPages; p++) {
+      const pageStart = p * PAGE_SIZE + 1;
+      const pageEnd = pageStart + PAGE_SIZE - 1;
+      const cells = Array.from({length: PAGE_SIZE}, (_, i) => {
+        const gi = p * PAGE_SIZE + i;
+        const s = stamps[gi];
+        const mile = MILESTONES.has(i + 1);
+        let cls = 'stamp-cell' + (s ? ' stamped' : '') + (mile ? ' milestone' : '');
+        if (s) {
+          const memo = (s.memo||'').replace(/"/g,'&quot;');
+          const url = (s.url||'').replace(/"/g,'&quot;');
+          const date = (s.date||'').replace(/"/g,'&quot;');
+          const bubbleMemo = s.memo ? '<div class="bubble-memo">'+s.memo+'</div>' : '';
+          const bubbleUrl = s.url ? '<a class="bubble-url" href="'+s.url+'" target="_blank">🎬 '+s.url.replace('https://','')+'</a>' : '';
+          const bubbleHint = (s.memo || s.url) ? '<div class="bubble-hint">클릭하면 자세히 보기</div>' : '<div class="bubble-hint">메모 없음 · 클릭하면 자세히</div>';
+          const bubble = '<div class="stamp-bubble"><div class="bubble-num">'+(gi+1)+'번 도장</div>'+bubbleMemo+bubbleUrl+bubbleHint+'</div>';
+          return '<div class="'+cls+'" onclick="openStampPopup(this)" onmouseenter="showBubble(this)" onmouseleave="hideBubble(this)" data-num="'+(gi+1)+'" data-memo="'+memo+'" data-url="'+url+'" data-date="'+date+'" data-mile="'+(mile?1:0)+'">'+bubble+'<div class="stamp-inner"><span class="stamp-icon">★</span></div><span class="cell-num">'+(gi+1)+'</span></div>';
+        }
+        return '<div class="'+cls+'"><div class="stamp-inner"></div><span class="cell-num">'+(gi+1)+'</span></div>';
+      }).join('');
+      const label = totalPages > 1 ? '<div class="page-label"><span class="page-label-badge">'+pageStart+'~'+pageEnd+'번</span> 쿠폰 '+(p+1)+'장째</div>' : '';
+      pagesHtml += '<div class="stamp-page">'+label+'<div class="stamp-grid">'+cells+'</div></div>';
+    }
+
+    const totalRewardSlots = PAGE_SIZE * totalPages / 3;
+    const reachedCount = Array.from({length: totalRewardSlots}, (_,ri) => count>=(ri+1)*3).filter(Boolean).length;
+    const rewardRows = Array.from({length: totalRewardSlots}, (_, ri) => {
+      const needed = (ri+1)*3;
+      const reached = count >= needed;
+      const given = rewards[ri];
+      return '<div class="reward-row"><div class="reward-chip'+(given?' given':reached?' reached':'')+'">'+( given?'✓ 지급완료':reached?(needed+'번째 가능'):(needed+'번째'))+'</div>'+(given?'<span class="reward-memo">'+(given.note||'메모 없음')+' <span style="color:var(--g400);font-size:11px;">('+given.date+')</span></span>':'<span class="reward-memo empty">미지급</span>')+'</div>';
+    }).join('');
+
+    const summaryHtml = '<span style="font-size:11px;padding:2px 7px;border-radius:12px;background:var(--amber-lt);color:#92400e;border:1px solid var(--amber-md);font-weight:600;">가능 '+reachedCount+'</span><span style="font-size:11px;padding:2px 7px;border-radius:12px;background:var(--green-lt);color:#065f46;border:1px solid var(--green-md);font-weight:600;">지급 '+givenCount+'</span>';
+    const isOpen = !!rewardOpen[u.id];
+
+    return '<div class="user-card"><div class="card-top"><div class="uinfo"><div class="avatar">'+u.name[0]+'</div><div><div class="uname">'+u.name+'</div><div class="usub">도장 '+count+'개 · 보상 '+givenCount+'회 지급</div></div></div></div>'+pagesHtml+'<div class="rewards-header" onclick="toggleReward(\''+u.id+'\')"><div class="rewards-header-left"><span class="rewards-title">보상 목록</span><div class="rewards-summary">'+summaryHtml+'</div></div><span class="rewards-arrow'+(isOpen?' open':'')+'" id="rw-arrow-'+u.id+'">▼</span></div><div class="rewards-body'+(isOpen?' open':'')+'" id="rw-body-'+u.id+'">'+rewardRows+'</div></div>';
+  }).join('');
+  window.scrollTo({top: scrollY, behavior: 'instant'});
+};
+
+onSnapshot(collection(db, 'users'), snap => {
+  allUsers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+  renderList();
+});
+</script>
+</body>
+</html>
